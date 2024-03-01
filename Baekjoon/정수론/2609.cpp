@@ -2,12 +2,20 @@
 
 using namespace std;
 
-int getGCD(int a, int b){
+//반복문
+int gcdIter(int a, int b){
     while(b){
         a%=b;
         swap(a,b);
     }
     return a;
+}
+//재귀함수
+int gcdRecur(int a, int b){
+    if(!b)//b가 0이면 
+        return a;
+    else
+        gcdRecur(b,a%b);
 }
 int main()
 {
@@ -26,7 +34,7 @@ int main()
    if(b>a)
         swap(a,b);
     int gcd = getGCD(a,b);
-    
+
     cout << gcd <<"\n";
     cout << a*b/gcd;
 
