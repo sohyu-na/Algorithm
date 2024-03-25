@@ -16,6 +16,8 @@ int main()
     for (int i = 0; i < n; i++) {
         cin >> v[i];
     }
+    //이미 오름차순 정렬되어있으므로 
+    //인덱스를 뒤로 부터 접근하면 소팅안해도됨
     sort(v.begin(), v.end(), greater<>());
     int m = 0;
     for (int i = 0; i < n; i++) {
