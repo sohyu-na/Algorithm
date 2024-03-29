@@ -2,6 +2,7 @@
     "files.associations": {
         "xstring": "cpp",
         "deque": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "xiosbase": "cpp"
     }
 }
