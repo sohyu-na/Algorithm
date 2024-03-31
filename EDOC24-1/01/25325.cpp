@@ -5,6 +5,7 @@
 #include <algorithm>
 
 using namespace std;
+
 bool cmp(pair<int, string> a, pair<int, string> b) {
     if(a.first == b.first){
         return a.second<b.second;
