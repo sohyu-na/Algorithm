@@ -3,6 +3,7 @@
         "xstring": "cpp",
         "deque": "cpp",
         "xtree": "cpp",
-        "xiosbase": "cpp"
+        "xiosbase": "cpp",
+        "vector": "cpp"
     }
 }
