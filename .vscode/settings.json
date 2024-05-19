@@ -4,6 +4,7 @@
         "deque": "cpp",
         "xtree": "cpp",
         "xiosbase": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "iostream": "cpp"
     }
 }
