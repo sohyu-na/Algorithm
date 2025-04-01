@@ -5,6 +5,7 @@
         "xtree": "cpp",
         "xiosbase": "cpp",
         "vector": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "queue": "cpp"
     }
 }
