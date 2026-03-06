@@ -5,93 +5,82 @@
 
 using namespace std;
 vector<string> v;
-struct state {
+bool check[11][11][11][11];
+
+struct State {
 	int rx, ry, bx, by, cnt;
 };
-bool check[11][11][11][11];
 
 int xd[4] = { 0,0,-1,1 };
 int yd[4] = { 1,-1,0,0 };
 
-struct R {
+struct resultRoll {
 	int x, y;
 	int steps;
 	bool fall;
 };
-
-R roll(int x, int y, int dir) {
+resultRoll roll(int x, int y, int dir) {
 	int steps = 0;
 	while (true) {
-		if (v[x + xd[dir]][y + yd[dir]] == '.') {
+		if (v[x + xd[dir]][y + yd[dir]] == '#') break;
+		else if (v[x + xd[dir]][y + yd[dir]] == '.') {
 			x += xd[dir];
 			y += yd[dir];
 			steps++;
 		}
 		else if (v[x + xd[dir]][y + yd[dir]] == 'O') {
-			R r = { x + xd[dir],y + yd[dir],steps+1,true };
-			return r;
-		}
-		else {
-			break; //반복문 종료 
+			return resultRoll{ x + xd[dir], y + yd[dir],steps, true };
 		}
 	}
-	return { x, y, steps, false };
+	return resultRoll{x, y, steps, false};
 }
 
 int main() {
 	int n, m;
-	cin >> n>>m;
-
+	cin >> n >> m;
 	v.resize(n);
+
 	for (int i = 0; i < n; i++) {
 		cin >> v[i];
 	}
-	
 	int rx, ry, bx, by;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
-			if (v[i][j] == 'R') {
-				rx = i; ry = j; v[i][j] = '.';
-			}
-			if (v[i][j] == 'B') {
-				bx = i; by = j; v[i][j] = '.';
-			}
+			if (v[i][j] == 'R') { rx = i; ry = j; v[i][j] = '.'; }
+			if (v[i][j] == 'B') { bx = i; by = j; v[i][j] = '.'; }
 		}
 	}
-	queue<state> q;
-	q.push({ rx, ry, bx, by,0 });
+
+	queue<State> q;
+	q.push({ rx,ry,bx,by,0 });
 	check[rx][ry][bx][by] = true;
 
 	while (!q.empty()) {
-		state s = q.front(); q.pop();
-		if (s.cnt >= 10) continue;
+		auto s = q.front(); q.pop();
+		if (s.cnt >=10) continue;
 
-		for (int i = 0; i < 4; i++) {
-			R rr = roll(s.rx, s.ry, i); 
-			R rb = roll(s.bx, s.by, i);
+		for (int dir = 0; dir < 4; dir++) {
+			auto R = roll(s.rx, s.ry, dir);
+			auto B=roll(s.bx, s.by, dir);
 
-			if (rb.fall) continue;
-			if (rr.fall) {
+			if (B.fall) continue;
+			if (R.fall) {
 				cout << s.cnt + 1;
 				return 0;
 			}
 
-			if (rr.x == rb.x and rr.y == rb.y) {
-				if (rr.steps > rb.steps) {
-					rr.x -= xd[i];
-					rr.y -= yd[i];
-				}
-				else {
-					rb.x -= xd[i];
-					rb.y -= yd[i];
-				}
+			if (R.x == B.x and R.y == B.y) {
+				if (R.steps > B.steps) { R.x -= xd[dir]; R.y -= yd[dir]; }
+				else{ B.x -= xd[dir]; B.y -= yd[dir]; }
 			}
-			if (!check[rr.x][rr.y][rb.x][rb.y]) {
-				check[rr.x][rr.y][rb.x][rb.y] = true;
-				q.push({ rr.x, rr.y, rb.x, rb.y, s.cnt + 1 });
+
+			if (!check[R.x][R.y][B.x][B.y]) {
+				check[R.x][R.y][B.x][B.y] = true;
+				q.push({ R.x,R.y,B.x,B.y,s.cnt + 1 });
 			}
 		}
 	}
-	cout << -1;
+	cout << "-1";
 	return 0;
+
 }
