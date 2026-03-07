@@ -58,4 +58,4 @@ int main() {
 		q.push(make_pair(x, c));
 	}
 	cout << game( 0, 0 );
-}s
+}
