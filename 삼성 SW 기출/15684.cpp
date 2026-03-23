@@ -5,7 +5,6 @@
 
 using namespace std;
 int n, m, h;
-bool ladder[11][31] = { false };
 
 bool equalLine(bool v[11][31]) {
 	bool result = true;
@@ -16,9 +15,11 @@ bool equalLine(bool v[11][31]) {
 				now += 1;
 			}
 			else if (now - 1 >= 1 and v[now - 1][j] == true) {
+				//cout << now<<"//";
 				now -= 1;
 			}
 		}
+		//cout << now << " ";
 		if (i != now) {
 			result = false;
 			break;
@@ -26,39 +27,89 @@ bool equalLine(bool v[11][31]) {
 	}
 	return result;
 }
-bool dfs(int idx, int cnt, int target) {
-	if (cnt == target) return equalLine(ladder);
-
-	for (int k = idx; k < (n - 1) * h; k++) {
-		int i = k / h + 1;
-		int j = k % h + 1;
-
-		if (ladder[i][j]) continue; //이미
-		if (i > 1 and ladder[i - 1][j]) continue; // 왼쪽 겹침
-		if (i < n - 1 and ladder[i + 1][j]) continue; //오른쪽 겹침
-
-		ladder[i][j] = true;
-		if (dfs(k + 1, cnt + 1, target)) { 
-			ladder[i][j] = false; 
-			return true; 
-		}
-		ladder[i][j] = false;
-	}
-	return false;
-}
 int main() {
 	cin >> n >> m >> h;
 
-	int row, col;
+	int a, b;
+	bool v[11][31] = { false };
 	for (int i = 0; i < m; i++) {
-		cin >> col >> row;
-		ladder[row][col] = true;
-	}
-	if (dfs(0, 0, 0)) cout << "0";
-	else if (dfs(0, 0, 1)) cout << "1";
-	else if (dfs(0, 0, 2)) cout << "2";
-	else if (dfs(0, 0, 3)) cout << "3";
-	else cout << "-1";
+		cin >> a >> b;
+		v[b][a] = true;
+	}//b-a 
 
+	if (equalLine(v)) {
+		cout << "0";
+		return 0;
+	}
+	queue<pair<int, int>> q;
+	for (int i = 1; i < n; i++) {
+		for (int j = 1; j <= h; j++) {
+			if (v[i][j] == false) {
+				if ((i == 1 or (i!=1 and v[i - 1][j] == false)) 
+					and (i==n or (i!=n and v[i+1][j]==false))) {
+					v[i][j] = true; q.push({ i,j });
+					if (equalLine(v)) {
+						cout << "1";
+						return 0;
+					}
+					v[i][j] = false;
+				}
+			}
+		}
+	}
+	queue<pair<int, int>> q3=q;
+	while (!q.empty()) {
+		int f = q.front().first;
+		int s = q.front().second;
+		v[f][s] = true; q.pop();
+		queue<pair<int, int>> q2 = q;
+		while (!q2.empty()) {
+			int i = q2.front().first;
+			int j = q2.front().second; q2.pop();
+			if ((i == 1 or (i != 1 and v[i - 1][j] == false))
+				and (i == n or (i != n and v[i + 1][j] == false))) {
+				v[i][j] = true; 
+				if (equalLine(v)) {
+					cout << "2";
+					return 0;
+				}
+				v[i][j] = false;
+			}
+		}
+		v[f][s] = false;
+	}
+
+	while (!q3.empty()) {
+		int f = q3.front().first;
+		int s = q3.front().second;
+		v[f][s] = true; q3.pop();
+		queue<pair<int, int>> q2 = q3;
+		while (!q2.empty()) {
+			int i = q2.front().first;
+			int j = q2.front().second; q2.pop();
+			if ((i == 1 or (i != 1 and v[i - 1][j] == false))
+				and (i == n or (i != n and v[i + 1][j] == false))) {
+				v[i][j] = true;
+				queue<pair<int, int>> q4 = q2;
+				while (!q4.empty()) {
+					int x = q4.front().first;
+					int y = q4.front().second; q4.pop();
+					if ((x == 1 or (x != 1 and v[x - 1][y] == false))
+						and (x == n or (x != n and v[x + 1][y] == false))) {
+						v[x][y] = true; 
+						if (equalLine(v)) {
+							cout << "3";
+							return 0;
+						}
+						v[x][y] = false;
+					}
+				}
+				v[i][j] = false;
+			}
+		}
+		v[f][s] = false;
+	}
+
+	cout << "-1";
 	return 0;
 }
